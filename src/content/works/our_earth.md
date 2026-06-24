@@ -2,7 +2,7 @@
 title: "[영화] 우리의 지구"
 year: 2025
 logline: "지구에서 점점 멀어지는 보이저 1호의 여정"
-runtime: "3.43 min"
+runtime: "3.24 min"
 role: "각본 · 연출 · 제작"
 tools: ["Midjourney", "Kling", "Suno",]
 poster: "/works/poster_our_earth.png"
