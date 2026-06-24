@@ -5,7 +5,7 @@ logline: "우주를 시뮬레이션하던 연구자들 눈 앞에 놀라운 일�
 runtime: "3.43 min"
 role: "각본 · 연출 · 제작"
 tools: ["Midjourney", "Kling", "Suno", "Supertone"]
-poster: "/src/content/works/poster_while_you_were_sleeping.png"
+poster: "/works/poster_while_you_were_sleeping.png"
 video: ""
 embed: "https://youtu.be/lQEE9epqwjQ"
 stills: []

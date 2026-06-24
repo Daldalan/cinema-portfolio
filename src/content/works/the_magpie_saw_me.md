@@ -5,7 +5,7 @@ logline: "뺑소니 사고를 목격한 까치가 정의를 실현한다."
 runtime: "5.15 min"
 role: "각본 · 연출 · 제작"
 tools: ["Midjourney", "Kling", "Suno"]
-poster: "/src/content/works/poster_the_magpie_saw_me.png"
+poster: "/works/poster_the_magpie_saw_me.png"
 video: ""
 embed: "https://youtu.be/MhFfAIyYVeg"
 stills: []
