@@ -1,0 +1,147 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const works = await getCollection('works', ({ data }) => !data.draft);
+  return works.map((work) => ({ params: { slug: work.slug } }));
+}
+
+const { slug } = Astro.params;
+const work = await getEntry('works', slug!);
+if (!work) return Astro.redirect('/404');
+const { data } = work;
+const { Content } = await work.render();
+
+// 임베드 URL → 재생용 주소 변환 (YouTube / Vimeo)
+function toEmbed(url?: string): string | null {
+  if (!url) return null;
+  const yt = url.match(/(?:youtu\.be\/|v=)([\w-]{11})/);
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
+  const vm = url.match(/vimeo\.com\/(\d+)/);
+  if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
+  return url;
+}
+const embedUrl = toEmbed(data.embed);
+---
+
+<Base title={data.title} description={data.logline}>
+  <main class="detail">
+    <a href="/works/" class="meta back">← 목록으로</a>
+
+    <div class="player wrap">
+      {data.video ? (
+        <video class="player-media" controls playsinline poster={data.poster || undefined}>
+          <source src={data.video} type="video/mp4" />
+        </video>
+      ) : embedUrl ? (
+        <div class="player-embed">
+          <iframe
+            src={embedUrl}
+            title={data.title}
+            loading="lazy"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+      ) : data.poster ? (
+        <img class="player-media" src={data.poster} alt={data.title} />
+      ) : (
+        <div class="player-media player-empty" aria-hidden="true"></div>
+      )}
+    </div>
+
+    <header class="head wrap">
+      <h1 class="head-title">{data.title}</h1>
+      {data.logline && <p class="head-logline">{data.logline}</p>}
+
+      <dl class="slate">
+        <div><dt class="meta">Year</dt><dd class="meta">{data.year}</dd></div>
+        {data.runtime && <div><dt class="meta">Runtime</dt><dd class="meta">{data.runtime}</dd></div>}
+        {data.role && <div><dt class="meta">Role</dt><dd class="meta">{data.role}</dd></div>}
+        {data.tools && data.tools.length > 0 && (
+          <div><dt class="meta">Tools</dt><dd class="meta">{data.tools.join(' · ')}</dd></div>
+        )}
+      </dl>
+    </header>
+
+    <article class="note wrap">
+      <Content />
+    </article>
+
+    {data.stills && data.stills.length > 0 && (
+      <section class="stills wrap">
+        {data.stills.map((src) => (
+          <img class="still" src={src} alt={`${data.title} still`} loading="lazy" />
+        ))}
+      </section>
+    )}
+  </main>
+</Base>
+
+<style>
+  .detail { padding-top: clamp(2rem, 6vh, 4rem); padding-bottom: clamp(5rem, 12vh, 9rem); }
+  .back { display: inline-block; padding: 0 clamp(1.25rem, 5vw, 3.5rem); }
+  .back:hover { color: var(--ember); }
+
+  .player { margin-top: 2rem; }
+  .player-media, .player-embed {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--surface);
+    object-fit: cover;
+  }
+  .player-empty {
+    background:
+      radial-gradient(120% 100% at 50% 0%, #1e1e22 0%, transparent 60%),
+      linear-gradient(180deg, #151517, #0c0c0e);
+  }
+  .player-embed { position: relative; }
+  .player-embed iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; border: 0;
+  }
+
+  .head { margin-top: clamp(2.5rem, 5vh, 4rem); max-width: 60rem; }
+  .head-title {
+    font-family: var(--serif-display);
+    font-weight: 300;
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    line-height: 1.02;
+  }
+  .head-logline {
+    margin-top: 1rem;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    color: var(--ash);
+    max-width: 44ch;
+  }
+
+  .slate {
+    margin-top: 2.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.4rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--hair);
+  }
+  .slate div { display: flex; flex-direction: column; gap: 0.45rem; }
+  .slate dt { opacity: 0.6; }
+  .slate dd { color: var(--bone); }
+
+  .note {
+    margin-top: clamp(3rem, 6vh, 4.5rem);
+    max-width: 40rem;
+    font-size: 1.18rem;
+    line-height: 1.85;
+  }
+  .note :global(p) { margin-bottom: 1.4rem; }
+  .note :global(p:last-child) { margin-bottom: 0; }
+
+  .stills {
+    margin-top: clamp(3.5rem, 7vh, 5.5rem);
+    display: grid;
+    gap: clamp(1rem, 2vw, 1.8rem);
+  }
+  .still { width: 100%; filter: grayscale(0.2) brightness(0.92); }
+</style>

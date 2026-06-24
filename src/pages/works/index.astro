@@ -1,0 +1,251 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import WorkCard from '../../components/WorkCard.astro';
+import { site } from '../../site';
+
+const works = (await getCollection('works', ({ data }) => !data.draft)).sort((a, b) => {
+  const ao = a.data.order ?? Infinity;
+  const bo = b.data.order ?? Infinity;
+  if (ao !== bo) return bo - ao;
+  return a.data.year - b.data.year;
+});
+
+const PER_PAGE = 4;
+const pages = [];
+for (let i = 0; i < works.length; i += PER_PAGE) pages.push(works.slice(i, i + PER_PAGE));
+const hasPaging = pages.length > 1;
+---
+
+<Base title="작품">
+  <header class="topbar wrap">
+    <a class="topbar-mark" href="/">{site.directorLatin}</a>
+    <a class="meta topbar-back" href="/">← 쇼릴</a>
+  </header>
+
+  <main>
+    <section id="about" class="section section--lead wrap about">
+      <p class="eyebrow section-eyebrow">About</p>
+      <p class="about-body">
+        스튜디오 달 에이아이는 생성형 AI를 통해 다양한 작업을 진행합니다.
+        단편 영화/애니메이션, 인-게임 영상, 광고를 제작합니다.
+      </p>
+    </section>
+
+    <section id="works" class="section wrap">
+      <h1 class="works-title">Works</h1>
+
+      <div class="deck" data-deck tabindex="0" role="group" aria-roledescription="carousel" aria-label="작품 목록">
+        <div class="deck-track" data-track>
+          {pages.map((pageWorks, p) => (
+            <div class="deck-page" role="group" aria-roledescription="slide" aria-label={`${p + 1} / ${pages.length}`}>
+              {pageWorks.map((work, i) => (
+                <WorkCard
+                  href={`/works/${work.slug}/`}
+                  title={work.data.title}
+                  year={work.data.year}
+                  logline={work.data.logline}
+                  poster={work.data.poster}
+                  index={p * PER_PAGE + i}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {hasPaging && (
+        <nav class="deck-nav" aria-label="작품 페이지 이동">
+          <button class="deck-arrow" data-prev type="button" aria-label="이전 페이지">‹</button>
+          <div class="deck-dots">
+            {pages.map((_, i) => (
+              <button class="deck-dot" data-dot type="button" aria-label={`${i + 1}페이지`}></button>
+            ))}
+          </div>
+          <button class="deck-arrow" data-next type="button" aria-label="다음 페이지">›</button>
+        </nav>
+      )}
+      {hasPaging && <p class="meta deck-count" data-count aria-live="polite"></p>}
+    </section>
+  </main>
+
+  <footer class="footer wrap">
+    <p class="footer-name">{site.directorLatin}</p>
+    <div class="footer-links">
+      <a class="meta" href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
+      {site.links.map((l) => (
+        <a class="meta" href={l.href} target="_blank" rel="noopener">{l.label}</a>
+      ))}
+    </div>
+    <p class="meta footer-credit">© {new Date().getFullYear()} {site.director}</p>
+  </footer>
+</Base>
+
+<style>
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: clamp(1.4rem, 4vh, 2.2rem);
+  }
+  .topbar-mark { font-weight: 700; letter-spacing: 0.2em; font-size: 0.95rem; }
+  .topbar-back { transition: color 0.3s ease; }
+  .topbar-back:hover { color: var(--bone); }
+
+  .section { padding-block: clamp(3.5rem, 9vh, 7rem); }
+  /* 상단 소개는 위 여백을 줄여 자연스럽게 페이지를 연다 */
+  .section--lead { padding-top: clamp(2rem, 5vh, 3.5rem); padding-bottom: clamp(0.5rem, 2vh, 2rem); }
+
+  .works-title {
+    font-weight: 700;
+    font-size: clamp(2.2rem, 6vw, 4.2rem);
+    letter-spacing: -0.02em;
+    margin-bottom: clamp(2.5rem, 6vh, 4.5rem);
+  }
+  .section-eyebrow { margin-bottom: 2rem; }
+
+  /* 스와이프 덱 */
+  .deck { position: relative; overflow: hidden; touch-action: pan-y; }
+  .deck:focus-visible { outline: 1px solid var(--ember); outline-offset: 12px; }
+  .deck-track {
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.2, 0.6, 0.2, 1);
+    will-change: transform;
+  }
+  .deck.dragging .deck-track { transition: none; }
+  .deck-page {
+    flex: 0 0 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 3vw, 3rem);
+    align-content: start;
+  }
+
+  .deck-nav {
+    display: flex; align-items: center; justify-content: center;
+    gap: 1.8rem;
+    margin-top: clamp(2.8rem, 6vh, 4.5rem);
+  }
+  .deck-arrow {
+    background: none; border: 0;
+    padding: 0.3rem 0.6rem;
+    font-size: 1.8rem; line-height: 1;
+    color: var(--ash); cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  .deck-arrow:hover:not(:disabled) { color: var(--bone); }
+  .deck-arrow:disabled { opacity: 0.22; cursor: default; }
+  .deck-dots { display: flex; gap: 0.7rem; }
+  .deck-dot {
+    width: 7px; height: 7px; padding: 0; border: 0;
+    border-radius: 50%;
+    background: var(--hair);
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+  .deck-dot[aria-current="true"] { background: var(--bone); transform: scale(1.3); }
+  .deck-count { margin-top: 1.4rem; text-align: center; opacity: 0.7; }
+
+  .about { max-width: 56rem; }
+  .about-body {
+    font-size: clamp(1.2rem, 2.3vw, 1.7rem);
+    line-height: 1.55;
+    color: var(--bone);
+  }
+
+  .footer {
+    padding-block: clamp(3rem, 8vh, 5.5rem);
+    border-top: 1px solid var(--hair);
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    gap: 1.5rem 2.5rem;
+  }
+  .footer-name {
+    font-weight: 700; font-size: 1.4rem;
+    letter-spacing: 0.2em; margin-right: auto;
+  }
+  .footer-links { display: flex; gap: 1.8rem; flex-wrap: wrap; }
+  .footer-links a { transition: color 0.4s ease; }
+  .footer-links a:hover { color: var(--bone); }
+  .footer-credit { width: 100%; opacity: 0.7; }
+
+  @media (max-width: 620px) {
+    .deck-page { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .deck-track { transition: none; }
+  }
+</style>
+
+<script>
+  function initDeck() {
+    const deck = document.querySelector('[data-deck]') as HTMLElement | null;
+    const track = document.querySelector('[data-track]') as HTMLElement | null;
+    if (!deck || !track) return;
+    if (deck.dataset.ready === '1') return;
+    deck.dataset.ready = '1';
+
+    const total = track.children.length;
+    const prevBtn = document.querySelector('[data-prev]') as HTMLButtonElement | null;
+    const nextBtn = document.querySelector('[data-next]') as HTMLButtonElement | null;
+    const dots = Array.from(document.querySelectorAll('[data-dot]')) as HTMLElement[];
+    const count = document.querySelector('[data-count]') as HTMLElement | null;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let index = 0;
+    let justDragged = false;
+
+    function render() {
+      track!.style.transform = `translateX(${-index * 100}%)`;
+      if (prevBtn) prevBtn.disabled = index === 0;
+      if (nextBtn) nextBtn.disabled = index === total - 1;
+      dots.forEach((d, i) => d.setAttribute('aria-current', i === index ? 'true' : 'false'));
+      if (count) {
+        const pad = (n: number) => String(n).padStart(2, '0');
+        count.textContent = `${pad(index + 1)} / ${pad(total)}`;
+      }
+    }
+    function goTo(i: number) { index = Math.max(0, Math.min(total - 1, i)); render(); }
+
+    prevBtn?.addEventListener('click', () => goTo(index - 1));
+    nextBtn?.addEventListener('click', () => goTo(index + 1));
+    dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+    deck.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') goTo(index - 1);
+      if (e.key === 'ArrowRight') goTo(index + 1);
+    });
+
+    let startX = 0, startY = 0, dragging = false, horizontal: boolean | null = null, width = 0;
+    deck.addEventListener('pointerdown', (e) => {
+      dragging = true; horizontal = null; justDragged = false;
+      startX = e.clientX; startY = e.clientY; width = deck.clientWidth || 1;
+      deck.classList.add('dragging');
+    });
+    deck.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - startX, dy = e.clientY - startY;
+      if (horizontal === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) horizontal = Math.abs(dx) > Math.abs(dy);
+      if (horizontal) {
+        justDragged = true;
+        if (!reduce) track!.style.transform = `translateX(${-index * 100 + (dx / width) * 100}%)`;
+      }
+    });
+    function endDrag(e: PointerEvent) {
+      if (!dragging) return;
+      dragging = false; deck!.classList.remove('dragging');
+      const dx = e.clientX - startX;
+      if (horizontal && Math.abs(dx) > width * 0.15) goTo(index + (dx < 0 ? 1 : -1));
+      else render();
+      horizontal = null;
+    }
+    deck.addEventListener('pointerup', endDrag);
+    deck.addEventListener('pointercancel', endDrag);
+    deck.addEventListener('pointerleave', endDrag);
+    deck.addEventListener('click', (e) => {
+      if (justDragged) { e.preventDefault(); e.stopPropagation(); justDragged = false; }
+    }, true);
+
+    render();
+  }
+
+  document.addEventListener('astro:page-load', initDeck);
+</script>

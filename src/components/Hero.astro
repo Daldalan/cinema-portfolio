@@ -1,0 +1,129 @@
+---
+import { site } from '../site';
+const hasVideo = site.showreelVideo && site.showreelVideo.length > 0;
+---
+
+<header class="hero">
+  {hasVideo ? (
+    <video
+      class="hero-media"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      poster={site.showreelPoster || undefined}
+    >
+      <source src={site.showreelVideo} type="video/mp4" />
+    </video>
+  ) : (
+    <div class="hero-media hero-fallback" aria-hidden="true"></div>
+  )}
+
+  <div class="hero-scrim"></div>
+
+  <div class="hero-content wrap">
+    <p class="eyebrow hero-kicker">Film · {new Date().getFullYear()}</p>
+    <h1 class="hero-name">{site.director}</h1>
+    <p class="hero-tagline">{site.tagline}</p>
+  </div>
+
+  <a href="#works" class="hero-scroll" aria-label="작품으로 이동">
+    <span class="meta">작품</span>
+    <span class="hero-scroll-line" aria-hidden="true"></span>
+  </a>
+</header>
+
+<style>
+  .hero {
+    position: relative;
+    height: 100svh;
+    min-height: 32rem;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .hero-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* 침묵 후 천천히 떠오르는 등장 */
+    opacity: 0;
+    animation: hero-rise 2.6s ease 0.5s forwards;
+  }
+  .hero-fallback {
+    background:
+      radial-gradient(120% 90% at 50% 18%, #211a14 0%, transparent 55%),
+      linear-gradient(180deg, #0d0b0a 0%, #14100d 60%, #0a0807 100%);
+    opacity: 1;
+    animation: none;
+  }
+
+  .hero-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(13, 11, 10, 0.35) 0%,
+      rgba(13, 11, 10, 0.1) 35%,
+      rgba(13, 11, 10, 0.55) 78%,
+      rgba(13, 11, 10, 0.92) 100%
+    );
+  }
+
+  .hero-content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: clamp(3.5rem, 9vh, 7rem);
+    /* 등장은 컨텐츠가 한 박자 뒤에 */
+    opacity: 0;
+    transform: translateY(14px);
+    animation: hero-rise-up 1.8s ease 1.4s forwards;
+  }
+  .hero-kicker { margin-bottom: 1.4rem; }
+  .hero-name {
+    font-family: var(--serif-display);
+    font-weight: 300;
+    font-size: clamp(2.75rem, 9vw, 6.5rem);
+    line-height: 0.96;
+    letter-spacing: 0.01em;
+  }
+  .hero-tagline {
+    margin-top: 1.3rem;
+    max-width: 34ch;
+    font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+    color: var(--bone);
+    opacity: 0.82;
+    font-style: italic;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    right: clamp(1.25rem, 5vw, 3.5rem);
+    bottom: clamp(3.5rem, 9vh, 7rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    opacity: 0;
+    animation: hero-rise-up 1.8s ease 1.8s forwards;
+  }
+  .hero-scroll-line {
+    width: 1px;
+    height: 3.5rem;
+    background: linear-gradient(180deg, var(--ash), transparent);
+  }
+  .hero-scroll:hover .hero-scroll-line {
+    background: linear-gradient(180deg, var(--ember), transparent);
+  }
+
+  @keyframes hero-rise { to { opacity: 1; } }
+  @keyframes hero-rise-up { to { opacity: 1; transform: translateY(0); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-media, .hero-content, .hero-scroll { opacity: 1; transform: none; animation: none; }
+  }
+</style>
