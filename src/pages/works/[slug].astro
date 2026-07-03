@@ -26,9 +26,8 @@ const embedUrl = toEmbed(data.embed);
 ---
 
 <Base title={data.title} description={data.logline}>
-  <div class="lightwrap">
   <main class="detail">
-    <a href="/works/" class="meta back">← 목록으로</a>
+    <a href="/#works" class="meta back">← 선집으로</a>
 
     <div class="player wrap">
       {data.video ? (
@@ -78,25 +77,9 @@ const embedUrl = toEmbed(data.embed);
       </section>
     )}
   </main>
-  </div>
 </Base>
 
 <style>
-  /* ── 상세 페이지: 라이트 테마 (목록과 동일) ──────────────── */
-  .lightwrap {
-    --surface: #e9e8e3;
-    --ash: #6c6c70;
-    --bone: #1a1a1d;
-    --ember: #1a1a1d;
-    --hair: rgba(20, 20, 25, 0.12);
-    background: #f5f4f1;
-    color: var(--bone);
-    min-height: 100svh;
-  }
-  /* 영상/포스터 없을 때 빈 칸도 라이트로 */
-  .lightwrap :global(.player-media.player-empty) {
-    background: linear-gradient(180deg, #eceae4, #e0ded7);
-  }
   .detail { padding-top: clamp(2rem, 6vh, 4rem); padding-bottom: clamp(5rem, 12vh, 9rem); }
   .back { display: inline-block; padding: 0 clamp(1.25rem, 5vw, 3.5rem); }
   .back:hover { color: var(--ember); }
@@ -110,8 +93,8 @@ const embedUrl = toEmbed(data.embed);
   }
   .player-empty {
     background:
-      radial-gradient(120% 100% at 50% 0%, #1e1e22 0%, transparent 60%),
-      linear-gradient(180deg, #151517, #0c0c0e);
+      radial-gradient(120% 100% at 50% 0%, #211a14 0%, transparent 60%),
+      linear-gradient(180deg, #16120f, #0c0a09);
   }
   .player-embed { position: relative; }
   .player-embed iframe {
@@ -121,10 +104,11 @@ const embedUrl = toEmbed(data.embed);
 
   .head { margin-top: clamp(2.5rem, 5vh, 4rem); max-width: 60rem; }
   .head-title {
-    font-family: var(--serif-display);
-    font-weight: 300;
-    font-size: clamp(2.4rem, 6vw, 4.5rem);
-    line-height: 1.02;
+    f font-family: var(--serif-display);
+    font-weight: 800;
+    font-size: clamp(2.8rem, 9vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
   }
   .head-logline {
     margin-top: 1rem;

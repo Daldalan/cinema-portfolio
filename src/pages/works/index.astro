@@ -7,14 +7,15 @@ import { site } from '../../site';
 const works = (await getCollection('works', ({ data }) => !data.draft)).sort((a, b) => {
   const ao = a.data.order ?? Infinity;
   const bo = b.data.order ?? Infinity;
-  if (ao !== bo) return bo - ao;
-  return a.data.year - b.data.year;
+  if (ao !== bo) return ao - bo;
+  return b.data.year - a.data.year;
 });
 
 const PER_PAGE = 4;
 const pages = [];
 for (let i = 0; i < works.length; i += PER_PAGE) pages.push(works.slice(i, i + PER_PAGE));
 const hasPaging = pages.length > 1;
+const total = works.length;
 ---
 
 <Base title="작품">
@@ -28,27 +29,32 @@ const hasPaging = pages.length > 1;
     <section id="about" class="section section--lead wrap about">
       <p class="eyebrow section-eyebrow">About</p>
       <p class="about-body">
-        스튜디오 달 에이아이는 생성형 AI를 통해 다양한 작업을 진행합니다.
+        스튜디오 달 에이아이는 생성형 AI를 통해 다양하고 재미있는 작업을 진행합니다.
         단편 영화/애니메이션, 인-게임 영상, 광고를 제작합니다.
       </p>
     </section>
 
     <section id="works" class="section wrap">
-      <h1 class="works-title">Works</h1>
+      <div class="works-head">
+        <h1 class="works-title">Works</h1>
+        <p class="works-count">({String(total).padStart(2, '0')})</p>
+      </div>
 
-      <div class="deck" data-deck tabindex="0" role="group" aria-roledescription="carousel" aria-label="작품 목록">
+      <div class="deck" data-deck tabindex="0" role="group" aria-roledescription="carousel" aria-label="작품 선집">
         <div class="deck-track" data-track>
           {pages.map((pageWorks, p) => (
             <div class="deck-page" role="group" aria-roledescription="slide" aria-label={`${p + 1} / ${pages.length}`}>
               {pageWorks.map((work, i) => (
-                <WorkCard
-                  href={`/works/${work.slug}/`}
-                  title={work.data.title}
-                  year={work.data.year}
-                  logline={work.data.logline}
-                  poster={work.data.poster}
-                  index={p * PER_PAGE + i}
-                />
+                <div class={`bento bento-${(i % 4) + 1}`}>
+                  <WorkCard
+                    href={`/works/${work.slug}/`}
+                    title={work.data.title}
+                    year={work.data.year}
+                    logline={work.data.logline}
+                    poster={work.data.poster}
+                    index={p * PER_PAGE + i}
+                  />
+                </div>
               ))}
             </div>
           ))}
@@ -84,8 +90,7 @@ const hasPaging = pages.length > 1;
 </Base>
 
 <style>
-  
-  /* ── 작품 목록 페이지: 라이트 테마 ───────────────────────── */
+  /* ── 라이트 테마 ─────────────────────────────────────────── */
   .lightwrap {
     --surface: #e9e8e3;
     --ash: #6c6c70;
@@ -96,10 +101,8 @@ const hasPaging = pages.length > 1;
     color: var(--bone);
     min-height: 100svh;
   }
-  /* 라이트 배경에서 포스터 타일에 은은한 떠오름 */
   .lightwrap :global(.tile-frame) { transition: box-shadow 0.45s ease; }
   .lightwrap :global(.tile:hover .tile-frame) { box-shadow: 0 18px 44px -22px rgba(20, 20, 25, 0.4); }
-  /* 포스터 없는 빈 타일도 라이트로 */
   .lightwrap :global(.tile-img.tile-empty) { background: linear-gradient(180deg, #eceae4, #e0ded7); }
 
   .topbar {
@@ -113,18 +116,32 @@ const hasPaging = pages.length > 1;
   .topbar-back:hover { color: var(--bone); }
 
   .section { padding-block: clamp(3.5rem, 9vh, 7rem); }
-  /* 상단 소개는 위 여백을 줄여 자연스럽게 페이지를 연다 */
-  .section--lead { padding-top: clamp(2rem, 5vh, 3.5rem); padding-bottom: clamp(0.5rem, 2vh, 2rem); }
-
-  .works-title {
-    font-weight: 700;
-    font-size: clamp(2.2rem, 6vw, 4.2rem);
-    letter-spacing: -0.02em;
-    margin-bottom: clamp(2.5rem, 6vh, 4.5rem);
-  }
+  .section--lead { padding-top: clamp(2rem, 5vh, 3.5rem); padding-bottom: clamp(1rem, 2vh, 2rem); }
+  #works { padding-top: clamp(1rem, 2vh, 2rem); }
   .section-eyebrow { margin-bottom: 2rem; }
 
-  /* 스와이프 덱 */
+  /* ── 2026: 과장된 타이포 위계 ────────────────────────────── */
+  .works-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin-bottom: clamp(2.5rem, 6vh, 4.5rem);
+  }
+  .works-title {
+    font-weight: 800;
+    font-size: clamp(4rem, 14vw, 11rem);
+    line-height: 0.88;
+    letter-spacing: -0.04em;
+  }
+  .works-count {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--ash);
+    padding-top: 1.2em;
+  }
+
+  /* ── 스와이프 덱 ─────────────────────────────────────────── */
   .deck { position: relative; overflow: hidden; touch-action: pan-y; }
   .deck:focus-visible { outline: 1px solid var(--ember); outline-offset: 12px; }
   .deck-track {
@@ -133,13 +150,22 @@ const hasPaging = pages.length > 1;
     will-change: transform;
   }
   .deck.dragging .deck-track { transition: none; }
+
+  /* ── 2026: 벤토 그리드 (넓음/좁음 지그재그) ──────────────── */
   .deck-page {
     flex: 0 0 100%;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 3vw, 3rem);
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.4rem, 3vw, 2.5rem);
     align-content: start;
   }
+  .bento-1 { grid-column: span 2; }
+  .bento-2 { grid-column: span 1; }
+  .bento-3 { grid-column: span 1; }
+  .bento-4 { grid-column: span 2; }
+  /* 좁은 칸은 세로형 프레임으로 리듬 주기 */
+  .bento-2 :global(.tile-frame),
+  .bento-3 :global(.tile-frame) { aspect-ratio: 3 / 3.05; }
 
   .deck-nav {
     display: flex; align-items: center; justify-content: center;
@@ -188,8 +214,11 @@ const hasPaging = pages.length > 1;
   .footer-links a:hover { color: var(--bone); }
   .footer-credit { width: 100%; opacity: 0.7; }
 
-  @media (max-width: 620px) {
+  @media (max-width: 720px) {
     .deck-page { grid-template-columns: 1fr; }
+    .bento-1, .bento-2, .bento-3, .bento-4 { grid-column: span 1; }
+    .bento-2 :global(.tile-frame),
+    .bento-3 :global(.tile-frame) { aspect-ratio: 3 / 2; }
   }
   @media (prefers-reduced-motion: reduce) {
     .deck-track { transition: none; }
