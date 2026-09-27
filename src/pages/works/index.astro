@@ -4,12 +4,9 @@ import Base from '../../layouts/Base.astro';
 import WorkCard from '../../components/WorkCard.astro';
 import { site } from '../../site';
 
-const works = (await getCollection('works', ({ data }) => !data.draft)).sort((a, b) => {
-  const ao = a.data.order ?? Infinity;
-  const bo = b.data.order ?? Infinity;
-  if (ao !== bo) return ao - bo;
-  return b.data.year - a.data.year;
-});
+const works = (await getCollection('works', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.localeCompare(a.data.date),
+);
 
 const total = works.length;
 // 4개 단위 지그재그에서 마지막 1개가 남으면 한 줄 전체를 쓰게 해 빈 칸을 없앤다.

@@ -6,7 +6,11 @@ const works = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),                 // 작품 제목
-    year: z.number(),                  // 연도 (그리드는 최신순 정렬)
+    // 공개일. '2026-05' 또는 '2026-05-10'. 그리드는 이 값의 최신순으로 자동 정렬.
+    date: z.preprocess(
+      (v) => (v instanceof Date ? v.toISOString().slice(0, 10) : v),
+      z.string().regex(/^\d{4}-\d{2}(-\d{2})?$/, "date는 '2026-05' 또는 '2026-05-10' 형식"),
+    ),
     logline: z.string().optional(),    // 한 줄 설명 (카드 / 상세 상단)
     runtime: z.string().optional(),    // 예: '8 min'
     role: z.string().optional(),       // 예: 'Director'
@@ -17,10 +21,9 @@ const works = defineCollection({
     embed: z.string().optional(),      // 또는 YouTube/Vimeo URL (video보다 우선 낮음)
     stills: z.array(z.string()).optional(), // 추가 스틸 이미지 경로들
 
-    order: z.number().optional(),      // 표시 순서 (작을수록 앞. 없으면 맨 뒤)
     featured: z.boolean().optional(),  // true면 그리드 상단에 강조
     draft: z.boolean().optional(),     // true면 사이트에서 숨김
-  }),
+  }).transform((data) => ({ ...data, year: Number(data.date.slice(0, 4)) })), // 연도는 date에서 자동 추출
 });
 
 export const collections = { works };

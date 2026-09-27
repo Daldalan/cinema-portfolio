@@ -1,6 +1,6 @@
 ---
 title: "[영화] 우리의 지구"
-year: 2025
+date: "2025-08"
 logline: "지구에서 점점 멀어지는 보이저 1호의 여정"
 runtime: "3.24 min"
 role: "각본 · 연출 · 제작"
@@ -11,7 +11,6 @@ embed: "https://youtu.be/dJ7poSilvdM?si=cXEIrtteb3V-YuIH"
 stills: []
 featured: false
 draft: false
-order: 1
 ---
 
 지구에서 가장 먼 곳을 탐험하고 있는 보이저 1호의 여정을
