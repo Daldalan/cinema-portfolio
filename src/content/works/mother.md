@@ -1,6 +1,6 @@
 ---
 title: "[영화] 엄마가 데려갈께"
-year: 2026
+date: "2026-09"
 logline: "범죄자 아들과 엄마 이야기"
 runtime: "5 min"
 role: "각본 · 연출"
@@ -11,5 +11,4 @@ embed: "https://youtu.be/13NmG_taClY"
 stills: []
 featured: false
 draft: false
-order: 9
 ---
