@@ -1,0 +1,11 @@
+---
+import WorksView from '../../../components/WorksView.astro';
+import { CATEGORIES, type Category } from '../../../content/config';
+
+export function getStaticPaths() {
+  return CATEGORIES.map((c) => ({ params: { category: c.toLowerCase() }, props: { category: c } }));
+}
+const { category } = Astro.props as { category: Category };
+---
+
+<WorksView category={category} />

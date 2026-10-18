@@ -1,6 +1,7 @@
 ---
 title: "[영화] 당신이 잠든 사이"
 date: "2025-09"
+category: "Animation"
 logline: "우주를 시뮬레이션하던 연구자들 눈 앞에 놀라운 일이 벌어진다."
 runtime: "3.43 min"
 role: "각본 · 연출 · 제작"

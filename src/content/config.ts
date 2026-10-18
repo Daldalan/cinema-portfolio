@@ -1,5 +1,9 @@
 import { defineCollection, z } from 'astro:content';
 
+// 작품 카테고리. 순서대로 Works 페이지 탭에 표시됩니다.
+export const CATEGORIES = ['Movie', 'Animation', 'ETC'] as const;
+export type Category = (typeof CATEGORIES)[number];
+
 // 작품 하나 = src/content/works/ 폴더의 마크다운 파일 하나.
 // 아래 frontmatter 필드를 채우면 그리드와 상세 페이지가 자동 생성됩니다.
 const works = defineCollection({
@@ -11,6 +15,7 @@ const works = defineCollection({
       (v) => (v instanceof Date ? v.toISOString().slice(0, 10) : v),
       z.string().regex(/^\d{4}-\d{2}(-\d{2})?$/, "date는 '2026-05' 또는 '2026-05-10' 형식"),
     ),
+    category: z.enum(CATEGORIES),      // 'Movie' | 'Animation' | 'ETC'
     logline: z.string().optional(),    // 한 줄 설명 (카드 / 상세 상단)
     runtime: z.string().optional(),    // 예: '8 min'
     role: z.string().optional(),       // 예: 'Director'
