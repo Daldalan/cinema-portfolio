@@ -1,5 +1,5 @@
 ---
-title: "[영화] 엄마가 데려갈께"
+title: "엄마가 데려갈께"
 date: "2026-09"
 category: "Animation"
 logline: "범죄자 아들과 엄마 이야기"

@@ -1,5 +1,5 @@
 ---
-title: "[영화] 우리의 지구"
+title: "우리의 지구"
 date: "2025-08"
 category: "Animation"
 logline: "지구에서 점점 멀어지는 보이저 1호의 여정"
