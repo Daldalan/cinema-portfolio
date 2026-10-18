@@ -46,7 +46,7 @@ const series = defineCollection({
     poster: z.string().optional(),             // 카드/상세 대표 이미지
     tools: z.array(z.string()).optional(),
     episodes: z.array(z.object({
-      title: z.string(),                       // 에피소드 제목
+      title: z.string().optional(),            // 에피소드 부제. 없으면 "Episode 1"처럼 표시
       logline: z.string().optional(),
       runtime: z.string().optional(),
       video: z.string().optional(),            // mp4

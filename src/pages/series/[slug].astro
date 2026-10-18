@@ -40,11 +40,11 @@ const pad = (n: number) => String(n).padStart(2, '0');
       {data.episodes.map((ep, i) => (
         <li class="episode" id={`ep${i + 1}`}>
           <div class="episode-head">
-            <span class="meta episode-num">EP {pad(i + 1)}</span>
-            <h2 class="episode-title">{ep.title}</h2>
+            {ep.title && <span class="meta episode-num">EP {pad(i + 1)}</span>}
+            <h2 class="episode-title">{ep.title ?? `Episode ${i + 1}`}</h2>
             {ep.runtime && <span class="meta">{ep.runtime}</span>}
           </div>
-          <Player title={`${data.title} — ${ep.title}`} video={ep.video} embed={ep.embed} poster={ep.poster} />
+          <Player title={`${data.title} — ${ep.title ?? `에피소드 ${i + 1}`}`} video={ep.video} embed={ep.embed} poster={ep.poster} />
           {ep.logline && <p class="episode-line">{ep.logline}</p>}
         </li>
       ))}
