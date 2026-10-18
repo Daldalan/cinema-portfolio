@@ -30,52 +30,42 @@ const lastIsOrphan = total % 4 === 1 || total % 4 === 3;
 ---
 
 <Light title={category ? `Shorts · ${category}` : 'Shorts'} active="shorts">
-    <section id="about" class="section section--lead wrap about">
-      <p class="eyebrow section-eyebrow">About</p>
-      <p class="about-body">
-        스튜디오 달 에이아이는 생성형 AI를 통해 다양하고 재미있는 작업을 진행합니다.
-        단편 영화/애니메이션, 인-게임 영상, 광고를 제작합니다.
-      </p>
-    </section>
+  <section id="shorts" class="section wrap">
+    <div class="page-head">
+      <h1 class="page-title">Shorts</h1>
+      <p class="page-count">({pad(total)})</p>
+    </div>
 
-    <section id="shorts" class="section wrap">
-      <div class="page-head">
-        <h1 class="page-title">Shorts</h1>
-        <p class="page-count">({pad(total)})</p>
-      </div>
+    <nav class="works-tabs" aria-label="작품 카테고리">
+      {tabs.map((t) => (
+        <a class:list={['works-tab', { 'is-active': t.active }]} href={t.href} aria-current={t.active ? 'page' : undefined}>
+          {t.label}<span class="works-tab-count">{pad(t.count)}</span>
+        </a>
+      ))}
+    </nav>
 
-      <nav class="works-tabs" aria-label="작품 카테고리">
-        {tabs.map((t) => (
-          <a class:list={['works-tab', { 'is-active': t.active }]} href={t.href} aria-current={t.active ? 'page' : undefined}>
-            {t.label}<span class="works-tab-count">{pad(t.count)}</span>
-          </a>
-        ))}
-      </nav>
+    {total === 0 && <p class="page-empty">아직 등록된 작품이 없습니다.</p>}
 
-      {total === 0 && <p class="page-empty">아직 등록된 작품이 없습니다.</p>}
-
-      {total > 0 && <div class="works-grid">
-        {works.map((work, i) => (
-          <div class={`bento bento-${(i % 4) + 1}${lastIsOrphan && i === total - 1 ? ' bento-full' : ''}`}>
-            <WorkCard
-              href={`/shorts/${work.slug}/`}
-              title={work.data.title}
-              year={work.data.year}
-              logline={work.data.logline}
-              poster={work.data.poster}
-              index={i}
-            />
-          </div>
-        ))}
-      </div>}
-    </section>
+    {total > 0 && <div class="works-grid">
+      {works.map((work, i) => (
+        <div class={`bento bento-${(i % 4) + 1}${lastIsOrphan && i === total - 1 ? ' bento-full' : ''}`}>
+          <WorkCard
+            href={`/shorts/${work.slug}/`}
+            title={work.data.title}
+            year={work.data.year}
+            logline={work.data.logline}
+            poster={work.data.poster}
+            index={i}
+          />
+        </div>
+      ))}
+    </div>}
+  </section>
 </Light>
 
 <style>
   .section { padding-block: clamp(3.5rem, 9vh, 7rem); }
-  .section--lead { padding-top: clamp(2rem, 5vh, 3.5rem); padding-bottom: clamp(1rem, 2vh, 2rem); }
-  #shorts { padding-top: clamp(1rem, 2vh, 2rem); }
-  .section-eyebrow { margin-bottom: 2rem; }
+  #shorts { padding-top: clamp(2rem, 5vh, 3.5rem); }
 
   /* ── 카테고리 탭 ─────────────────────────────────────────── */
   .works-tabs {
@@ -121,21 +111,5 @@ const lastIsOrphan = total % 4 === 1 || total % 4 === 3;
   .bento-full { grid-column: 1 / -1; }
   .bento-full :global(.tile-frame) { aspect-ratio: 21 / 9; }
 
-  .about { max-width: 56rem; }
-  .about-body {
-    font-size: clamp(1.2rem, 2.3vw, 1.7rem);
-    line-height: 1.55;
-    color: var(--bone);
-  }
-
-  @media (max-width: 720px) {
-    .works-tabs { gap: 0.6rem 1.1rem; }
-    .works-tab { font-size: 0.88rem; }
-    .works-grid { grid-template-columns: 1fr; }
-    .bento-1, .bento-2, .bento-3, .bento-4, .bento-full { grid-column: span 1; }
-    .bento-2 :global(.tile-frame),
-    .bento-3 :global(.tile-frame),
-    .bento-full :global(.tile-frame) { aspect-ratio: 3 / 2; }
-  }
 </style>
 
