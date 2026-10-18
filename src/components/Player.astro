@@ -1,0 +1,55 @@
+---
+// 상세 페이지 영상: mp4 → YouTube/Vimeo 임베드 → 포스터 → 빈 화면 순으로 대체.
+interface Props {
+  title: string;
+  video?: string;
+  embed?: string;
+  poster?: string;
+}
+const { title, video, embed, poster } = Astro.props;
+
+// 임베드 URL → 재생용 주소 변환 (YouTube / Vimeo)
+function toEmbed(url?: string): string | null {
+  if (!url) return null;
+  const yt = url.match(/(?:youtu\.be\/|v=)([\w-]{11})/);
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
+  const vm = url.match(/vimeo\.com\/(\d+)/);
+  if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
+  return url;
+}
+const embedUrl = toEmbed(embed);
+---
+
+{video ? (
+  <video class="player-media" controls playsinline poster={poster || undefined}>
+    <source src={video} type="video/mp4" />
+  </video>
+) : embedUrl ? (
+  <div class="player-embed">
+    <iframe
+      src={embedUrl}
+      title={title}
+      loading="lazy"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  </div>
+) : poster ? (
+  <img class="player-media" src={poster} alt={title} />
+) : (
+  <div class="player-media player-empty" aria-hidden="true"></div>
+)}
+
+<style>
+  .player-media, .player-embed {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--surface);
+    object-fit: cover;
+  }
+  .player-embed { position: relative; }
+  .player-embed iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; border: 0;
+  }
+</style>

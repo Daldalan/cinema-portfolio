@@ -1,32 +1,35 @@
 ---
 interface Props {
-  href: string;
+  href?: string;   // 없으면 클릭되지 않는 카드 (예: 공개 예정 시리즈)
   title: string;
-  year: number;
+  year?: number;
   logline?: string;
   poster?: string;
+  badge?: string;  // 이미지 위 라벨. 예: 'Coming soon'
   index: number;
 }
-const { href, title, year, logline, poster, index } = Astro.props;
+const { href, title, year, logline, poster, badge, index } = Astro.props;
 const num = String(index + 1).padStart(2, '0');
+const Tag = href ? 'a' : 'div';
 ---
 
-<a class="tile" href={href}>
+<Tag class="tile" href={href}>
   <div class="tile-frame">
     {poster ? (
       <img class="tile-img" src={poster} alt={title} loading="lazy" />
     ) : (
-      <div class="tile-img tile-empty" aria-hidden="true"><span>{num}</span></div>
+      <div class="tile-img tile-empty" aria-hidden="true">{!badge && <span>{num}</span>}</div>
     )}
+    {badge && <span class="tile-badge">{badge}</span>}
   </div>
   <div class="tile-meta">
     <h3 class="tile-title">{title}</h3>
     <p class="tile-sub">
-      <span class="tile-year">{year}</span>
+      {year && <span class="tile-year">{year}</span>}
       {logline && <span class="tile-line">{logline}</span>}
     </p>
   </div>
-</a>
+</Tag>
 
 <style>
   .tile { display: block; }
@@ -43,8 +46,8 @@ const num = String(index + 1).padStart(2, '0');
     filter: brightness(0.9);
     transition: transform 1.1s cubic-bezier(0.2,0.6,0.2,1), filter 0.7s ease;
   }
-  .tile:hover .tile-img,
-  .tile:focus-visible .tile-img {
+  a.tile:hover .tile-img,
+  a.tile:focus-visible .tile-img {
     transform: scale(1.04);
     filter: brightness(1.04);
   }
@@ -76,7 +79,19 @@ const num = String(index + 1).padStart(2, '0');
     line-height: 1.15;
     transition: opacity 0.3s ease;
   }
-  .tile:hover .tile-title { opacity: 0.65; }
+  .tile[href]:hover .tile-title { opacity: 0.65; }
+
+  .tile-badge {
+    position: absolute;
+    left: 1rem; top: 1rem;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #f5f4f1;
+    background: rgba(20, 20, 25, 0.82);
+  }
 
   .tile-sub {
     flex-shrink: 0;
