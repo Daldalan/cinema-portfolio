@@ -10,6 +10,7 @@ interface Props {
 const { title, description } = Astro.props;
 const pageTitle = title ? `${title} — ${site.director}` : site.director;
 const desc = description ?? site.tagline;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 ---
 
 <!doctype html>
@@ -22,6 +23,23 @@ const desc = description ?? site.tagline;
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={desc} />
     <meta property="og:type" content="website" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {canonical && <meta property="og:url" content={canonical} />}
+
+    <!-- SNS가 붙이는 추적용 꼬리표(utm_*, fbclid 등)를 주소창에서 지운다. 페이지는 다시 불러오지 않음. -->
+    <script is:inline>
+      (function () {
+        try {
+          var url = new URL(location.href);
+          var drop = /^(utm_|fbclid$|gclid$|igshid$|mc_cid$|mc_eid$)/;
+          var changed = false;
+          Array.from(url.searchParams.keys()).forEach(function (k) {
+            if (drop.test(k)) { url.searchParams.delete(k); changed = true; }
+          });
+          if (changed) history.replaceState(history.state, '', url.pathname + url.search + url.hash);
+        } catch (e) {}
+      })();
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

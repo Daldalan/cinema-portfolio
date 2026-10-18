@@ -5,3 +5,6 @@ dist/
 *.log
 .env
 .vercel
+
+# Windows 다운로드 메타데이터
+*:Zone.Identifier
