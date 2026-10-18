@@ -2,7 +2,7 @@
 title: "디아블로2 팬무비"
 date: "2026-01"
 category: "Movie"
-logline: "디아블로2 영상을 AI로 제작"
+logline: "인트로 영상을 AI로 제작"
 runtime: "3 min"
 role: "제작"
 tools: ["Midjourney", "Higgfield"]
