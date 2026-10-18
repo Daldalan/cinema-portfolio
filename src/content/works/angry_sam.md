@@ -1,5 +1,5 @@
 ---
-title: "[영화] Angry Sam"
+title: "Angry Sam"
 date: "2026-07"
 category: "Animation"
 logline: "카우보이 쌤과 외계인과의 대결"

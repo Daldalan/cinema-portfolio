@@ -1,5 +1,5 @@
 ---
-title: "[게임] 여신전쟁"
+title: "여신전쟁"
 date: "2025-11"
 category: "Movie"
 logline: "빛과 어둠의 두 여신이 맞붙는다."

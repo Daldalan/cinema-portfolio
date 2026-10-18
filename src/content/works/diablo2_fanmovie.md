@@ -1,5 +1,5 @@
 ---
-title: "[게임] 디아블로2"
+title: "디아블로2"
 date: "2026-01"
 category: "Movie"
 logline: "디아블로2 영상을 AI로 제작"
