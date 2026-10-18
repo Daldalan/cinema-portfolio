@@ -81,11 +81,11 @@ logline: "한 줄 설명."
 poster: "/series/norse.jpg"      # 카드 대표 이미지 (public/series/ 에 넣기)
 tools: ["Seedance 2.0"]
 episodes:                        # 적은 순서대로 EP 01, EP 02 …
-  - title: "1화 제목"
+  - title: "1화 부제"             # 생략하면 "Episode 1"로 표시
     runtime: "5 min"
     embed: "https://youtu.be/..."  # 또는 video: "/series/ep1.mp4"
     logline: "에피소드 한 줄 설명"
-  - title: "2화 제목"
+  - title: "2화 부제"
     embed: "https://youtu.be/..."
 ---
 
