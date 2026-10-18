@@ -1,0 +1,114 @@
+---
+import { getCollection } from 'astro:content';
+import Light from '../../layouts/Light.astro';
+import Player from '../../components/Player.astro';
+
+// 공개된(released) 시리즈만 상세 페이지를 만든다.
+export async function getStaticPaths() {
+  const all = await getCollection('series', ({ data }) => !data.draft && data.status === 'released');
+  return all.map((s) => ({ params: { slug: s.slug }, props: { entry: s } }));
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await entry.render();
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<Light title={data.title} description={data.logline} active="series">
+  <div class="detail">
+    <a href="/series/" class="meta back wrap">← Series</a>
+
+    <header class="head wrap">
+      <h1 class="head-title">{data.title}</h1>
+      {data.logline && <p class="head-logline">{data.logline}</p>}
+
+      <dl class="slate">
+        {data.year && <div><dt class="meta">Year</dt><dd class="meta">{data.year}</dd></div>}
+        <div><dt class="meta">Episodes</dt><dd class="meta">{data.episodes.length}</dd></div>
+        {data.tools && data.tools.length > 0 && (
+          <div><dt class="meta">Tools</dt><dd class="meta">{data.tools.join(' · ')}</dd></div>
+        )}
+      </dl>
+    </header>
+
+    <article class="note wrap">
+      <Content />
+    </article>
+
+    <ol class="episodes wrap">
+      {data.episodes.map((ep, i) => (
+        <li class="episode" id={`ep${i + 1}`}>
+          <div class="episode-head">
+            <span class="meta episode-num">EP {pad(i + 1)}</span>
+            <h2 class="episode-title">{ep.title}</h2>
+            {ep.runtime && <span class="meta">{ep.runtime}</span>}
+          </div>
+          <Player title={`${data.title} — ${ep.title}`} video={ep.video} embed={ep.embed} poster={ep.poster} />
+          {ep.logline && <p class="episode-line">{ep.logline}</p>}
+        </li>
+      ))}
+    </ol>
+  </div>
+</Light>
+
+<style>
+  .detail { padding-top: clamp(1rem, 3vh, 2rem); padding-bottom: clamp(5rem, 12vh, 9rem); }
+  .back { display: block; }
+  .back:hover { color: var(--bone); }
+
+  .head { margin-top: clamp(2rem, 4vh, 3rem); }
+  .head-title {
+    font-weight: 800;
+    font-size: clamp(2rem, 6vw, 4.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+  .head-logline {
+    margin-top: 1rem;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    color: var(--ash);
+    max-width: 44ch;
+  }
+  .slate {
+    margin-top: 2.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.4rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--hair);
+  }
+  .slate div { display: flex; flex-direction: column; gap: 0.45rem; }
+  .slate dt { opacity: 0.6; }
+  .slate dd { color: var(--bone); }
+
+  .note {
+    margin-top: clamp(2.5rem, 5vh, 4rem);
+    font-size: 1.18rem;
+    line-height: 1.85;
+  }
+  .note :global(p) { margin-bottom: 1.4rem; max-width: 40rem; }
+  .note :global(p:last-child) { margin-bottom: 0; }
+
+  .episodes {
+    list-style: none;
+    margin-top: clamp(3rem, 7vh, 5rem);
+    display: grid;
+    gap: clamp(3rem, 8vh, 5.5rem);
+  }
+  .episode-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    margin-bottom: 1rem;
+  }
+  .episode-title {
+    font-weight: 700;
+    font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+    letter-spacing: -0.01em;
+    margin-right: auto;
+  }
+  .episode-line { margin-top: 0.9rem; color: var(--ash); max-width: 50ch; }
+</style>

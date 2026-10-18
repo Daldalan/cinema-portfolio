@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import Light from '../../layouts/Light.astro';
+import WorkCard from '../../components/WorkCard.astro';
+
+// 공개된 시리즈(최신순) 다음에 공개 예정 시리즈.
+const all = (await getCollection('series', ({ data }) => !data.draft)).sort((a, b) => {
+  if (a.data.status !== b.data.status) return a.data.status === 'released' ? -1 : 1;
+  return (b.data.date ?? '').localeCompare(a.data.date ?? '');
+});
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<Light title="Series" active="series">
+  <section class="section wrap">
+    <div class="page-head">
+      <h1 class="page-title">Series</h1>
+      <p class="page-count">({pad(all.length)})</p>
+    </div>
+
+    {all.length === 0 && <p class="page-empty">아직 등록된 시리즈가 없습니다.</p>}
+
+    <div class="series-list">
+      {all.map((s, i) => {
+        const released = s.data.status === 'released';
+        const eps = s.data.episodes.length;
+        return (
+          <WorkCard
+            href={released ? `/series/${s.slug}/` : undefined}
+            title={s.data.title}
+            year={s.data.year}
+            logline={released && eps > 0 ? `${eps}부작${s.data.logline ? ' · ' + s.data.logline : ''}` : s.data.logline}
+            poster={s.data.poster}
+            badge={released ? undefined : 'Coming soon'}
+            index={i}
+          />
+        );
+      })}
+    </div>
+  </section>
+</Light>
+
+<style>
+  .section { padding-top: clamp(2rem, 5vh, 3.5rem); padding-bottom: clamp(3.5rem, 9vh, 7rem); }
+  .page-head { margin-bottom: clamp(2.5rem, 6vh, 4rem); }
+  .series-list { display: grid; gap: clamp(2.5rem, 6vh, 4rem); }
+  .series-list :global(.tile-frame) { aspect-ratio: 21 / 9; }
+  @media (max-width: 720px) {
+    .series-list :global(.tile-frame) { aspect-ratio: 3 / 2; }
+  }
+</style>

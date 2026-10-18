@@ -4,17 +4,20 @@ import { defineCollection, z } from 'astro:content';
 export const CATEGORIES = ['Movie', 'Animation', 'ETC'] as const;
 export type Category = (typeof CATEGORIES)[number];
 
-// 작품 하나 = src/content/works/ 폴더의 마크다운 파일 하나.
+// 공개일. '2026-05' 또는 '2026-05-10'. 따옴표 없는 2026-05-10(YAML 날짜)도 허용.
+const dateField = z.preprocess(
+  (v) => (v instanceof Date ? v.toISOString().slice(0, 10) : v),
+  z.string().regex(/^\d{4}-\d{2}(-\d{2})?$/, "date는 '2026-05' 또는 '2026-05-10' 형식"),
+);
+
+// Shorts(단편) 한 편 = src/content/works/ 폴더의 마크다운 파일 하나.
 // 아래 frontmatter 필드를 채우면 그리드와 상세 페이지가 자동 생성됩니다.
 const works = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),                 // 작품 제목
     // 공개일. '2026-05' 또는 '2026-05-10'. 그리드는 이 값의 최신순으로 자동 정렬.
-    date: z.preprocess(
-      (v) => (v instanceof Date ? v.toISOString().slice(0, 10) : v),
-      z.string().regex(/^\d{4}-\d{2}(-\d{2})?$/, "date는 '2026-05' 또는 '2026-05-10' 형식"),
-    ),
+    date: dateField,
     category: z.enum(CATEGORIES),      // 'Movie' | 'Animation' | 'ETC'
     logline: z.string().optional(),    // 한 줄 설명 (카드 / 상세 상단)
     runtime: z.string().optional(),    // 예: '8 min'
@@ -31,4 +34,27 @@ const works = defineCollection({
   }).transform((data) => ({ ...data, year: Number(data.date.slice(0, 4)) })), // 연도는 date에서 자동 추출
 });
 
-export const collections = { works };
+// 시리즈 하나 = src/content/series/ 폴더의 마크다운 파일 하나.
+// status가 'coming-soon'이면 Series 목록에 예고 카드만 보이고 상세 페이지는 만들지 않습니다.
+const series = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),                         // 시리즈 제목
+    status: z.enum(['coming-soon', 'released']), // 공개 전: 'coming-soon', 공개 후: 'released'
+    date: dateField.optional(),                // 공개일 (목록 최신순 정렬, 연도 표시)
+    logline: z.string().optional(),            // 한 줄 설명
+    poster: z.string().optional(),             // 카드/상세 대표 이미지
+    tools: z.array(z.string()).optional(),
+    episodes: z.array(z.object({
+      title: z.string(),                       // 에피소드 제목
+      logline: z.string().optional(),
+      runtime: z.string().optional(),
+      video: z.string().optional(),            // mp4
+      embed: z.string().optional(),            // YouTube/Vimeo URL
+      poster: z.string().optional(),
+    })).default([]),                           // 나열한 순서가 1화, 2화… 순서
+    draft: z.boolean().optional(),
+  }).transform((data) => ({ ...data, year: data.date ? Number(data.date.slice(0, 4)) : undefined })),
+});
+
+export const collections = { works, series };

@@ -31,7 +31,7 @@ showreelPoster: '/showreel-poster.jpg',
 
 ---
 
-## 3. 신작 추가하는 법 (핵심)
+## 3. 신작(Shorts) 추가하는 법 (핵심)
 
 `src/content/works/` 에 마크다운 파일을 하나 만들면 끝입니다.
 그리드와 상세 페이지가 자동 생성되고, `date`(공개일) 최신순으로 자동 정렬됩니다.
@@ -66,6 +66,34 @@ draft: false                     # true면 사이트에서 숨김
 
 ---
 
+## 3-1. 시리즈(Series) 추가하는 법
+
+`src/content/series/` 에 마크다운 파일을 하나 만듭니다. 공개 전에는
+`status: "coming-soon"` 으로 두면 Series 목록에 예고 카드만 보이고,
+`"released"` 로 바꾸면 상세 페이지(`/series/파일이름/`)가 생깁니다.
+
+```md
+---
+title: "북유럽신화"
+status: "released"               # 공개 전: "coming-soon"
+date: "2026-12"                  # 공개일 (목록 정렬, 연도 표시)
+logline: "한 줄 설명."
+poster: "/series/norse.jpg"      # 카드 대표 이미지 (public/series/ 에 넣기)
+tools: ["Seedance 2.0"]
+episodes:                        # 적은 순서대로 EP 01, EP 02 …
+  - title: "1화 제목"
+    runtime: "5 min"
+    embed: "https://youtu.be/..."  # 또는 video: "/series/ep1.mp4"
+    logline: "에피소드 한 줄 설명"
+  - title: "2화 제목"
+    embed: "https://youtu.be/..."
+---
+
+여기 본문이 시리즈 소개가 됩니다.
+```
+
+---
+
 ## 4. 디자인 손보기
 
 - **색**: `src/styles/global.css` 상단의 `:root` 변수만 바꾸면 전체에 반영됩니다.
@@ -85,7 +113,7 @@ draft: false                     # true면 사이트에서 숨김
 3. 배포 완료. 이후로는 **새 작품 .md 추가 → `git push` → 자동 배포.**
    AI를 다시 부르거나 코드를 건드릴 필요 없습니다.
 
-> `astro.config.mjs`의 `site` 값을 실제 도메인으로 바꿔두세요.
+> 실제 도메인이 생기면 `astro.config.mjs`의 `site` 주석을 풀고 도메인을 넣으세요. 임시 값을 넣어 두면 옛 /works/ 주소의 자동 이동이 그 도메인으로 갑니다.
 
 ---
 
@@ -102,8 +130,9 @@ src/
     Hero.astro             ← 풀스크린 쇼릴 랜딩
     WorkCard.astro         ← 그리드 카드
   pages/
-    index.astro            ← 랜딩 + 그리드 + About + 푸터
-    works/[slug].astro     ← 작품 상세 (자동 생성)
+    index.astro            ← 쇼릴 랜딩
+    shorts/                ← Shorts 목록 · 카테고리 · 작품 상세
+    series/                ← Series 목록 · 시리즈 상세
     404.astro
   styles/global.css        ← 토큰·그레인·타이포
 public/                    ← 영상·이미지 (showreel.mp4, works/ 등)

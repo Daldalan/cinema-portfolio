@@ -1,5 +1,5 @@
 ---
-import WorksView from '../../../components/WorksView.astro';
+import ShortsView from '../../../components/ShortsView.astro';
 import { CATEGORIES, type Category } from '../../../content/config';
 
 export function getStaticPaths() {
@@ -8,4 +8,4 @@ export function getStaticPaths() {
 const { category } = Astro.props as { category: Category };
 ---
 
-<WorksView category={category} />
+<ShortsView category={category} />
