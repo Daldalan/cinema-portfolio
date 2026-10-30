@@ -1,16 +1,16 @@
 ---
-// 라이트 테마 공통 레이아웃: 상단 바(Shorts · Series) + 푸터.
+// 라이트 테마 공통 레이아웃: 상단 바(Movies · Series) + 푸터.
 import Base from './Base.astro';
 import { site } from '../site';
 
 interface Props {
   title?: string;
   description?: string;
-  active?: 'shorts' | 'series';
+  active?: 'movies' | 'series';
 }
 const { title, description, active } = Astro.props;
 const nav = [
-  { key: 'shorts', label: 'Shorts', href: '/shorts/' },
+  { key: 'movies', label: 'Movies', href: '/movies/' },
   { key: 'series', label: 'Series', href: '/series/' },
 ];
 ---

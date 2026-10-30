@@ -15,10 +15,10 @@ const all = (await getCollection('works', ({ data }) => !data.draft)).sort(
 const works = category ? all.filter((w) => w.data.category === category) : all;
 const pad = (n: number) => String(n).padStart(2, '0');
 const tabs = [
-  { label: 'All', href: '/shorts/', count: all.length, active: !category },
+  { label: 'All', href: '/movies/', count: all.length, active: !category },
   ...CATEGORIES.map((c) => ({
     label: c,
-    href: `/shorts/category/${c.toLowerCase()}/`,
+    href: `/movies/category/${c.toLowerCase()}/`,
     count: all.filter((w) => w.data.category === c).length,
     active: c === category,
   })),
@@ -29,10 +29,10 @@ const total = works.length;
 const lastIsOrphan = total % 4 === 1 || total % 4 === 3;
 ---
 
-<Light title={category ? `Shorts · ${category}` : 'Shorts'} active="shorts">
-  <section id="shorts" class="section wrap">
+<Light title={category ? `Movies · ${category}` : 'Movies'} active="movies">
+  <section id="movies" class="section wrap">
     <div class="page-head">
-      <h1 class="page-title">Shorts</h1>
+      <h1 class="page-title">Movies</h1>
       <p class="page-count">({pad(total)})</p>
     </div>
 
@@ -50,7 +50,7 @@ const lastIsOrphan = total % 4 === 1 || total % 4 === 3;
       {works.map((work, i) => (
         <div class={`bento bento-${(i % 4) + 1}${lastIsOrphan && i === total - 1 ? ' bento-full' : ''}`}>
           <WorkCard
-            href={`/shorts/${work.slug}/`}
+            href={`/movies/${work.slug}/`}
             title={work.data.title}
             year={work.data.year}
             logline={work.data.logline}
@@ -65,7 +65,7 @@ const lastIsOrphan = total % 4 === 1 || total % 4 === 3;
 
 <style>
   .section { padding-block: clamp(3.5rem, 9vh, 7rem); }
-  #shorts { padding-top: clamp(2rem, 5vh, 3.5rem); }
+  #movies { padding-top: clamp(2rem, 5vh, 3.5rem); }
 
   /* ── 카테고리 탭 ─────────────────────────────────────────── */
   .works-tabs {

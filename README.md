@@ -31,7 +31,7 @@ showreelPoster: '/showreel-poster.jpg',
 
 ---
 
-## 3. 신작(Shorts) 추가하는 법 (핵심)
+## 3. 신작(Movies) 추가하는 법 (핵심)
 
 `src/content/works/` 에 마크다운 파일을 하나 만들면 끝입니다.
 그리드와 상세 페이지가 자동 생성되고, `date`(공개일) 최신순으로 자동 정렬됩니다.
@@ -131,7 +131,7 @@ src/
     WorkCard.astro         ← 그리드 카드
   pages/
     index.astro            ← 쇼릴 랜딩
-    shorts/                ← Shorts 목록 · 카테고리 · 작품 상세
+    movies/                ← Movies 목록 · 카테고리 · 작품 상세
     series/                ← Series 목록 · 시리즈 상세
     404.astro
   styles/global.css        ← 토큰·그레인·타이포

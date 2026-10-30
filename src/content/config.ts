@@ -10,7 +10,7 @@ const dateField = z.preprocess(
   z.string().regex(/^\d{4}-\d{2}(-\d{2})?$/, "date는 '2026-05' 또는 '2026-05-10' 형식"),
 );
 
-// Shorts(단편) 한 편 = src/content/works/ 폴더의 마크다운 파일 하나.
+// Movies 작품 한 편 = src/content/works/ 폴더의 마크다운 파일 하나.
 // 아래 frontmatter 필드를 채우면 그리드와 상세 페이지가 자동 생성됩니다.
 const works = defineCollection({
   type: 'content',
