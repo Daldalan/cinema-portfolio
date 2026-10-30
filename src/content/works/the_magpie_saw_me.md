@@ -1,7 +1,7 @@
 ---
 title: "까치가 봤어"
 date: "2026-02"
-category: "Movie"
+category: "Cinematic"
 logline: "뺑소니 사고를 목격한 까치가 정의를 실현한다."
 runtime: "5.15 min"
 role: "각본 · 연출 · 제작"

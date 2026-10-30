@@ -40,7 +40,7 @@ showreelPoster: '/showreel-poster.jpg',
 ---
 title: "작품 제목"
 date: "2026-05"                  # 공개일. "2026-05-10"처럼 일까지 써도 됨 (연도는 자동 추출)
-category: "Movie"                # Movie | Animation | ETC (Works 페이지 탭 분류)
+category: "Cinematic"            # Cinematic | Animation | ETC (Movies 페이지 탭 분류)
 logline: "한 줄 설명."
 runtime: "9 min"
 role: "각본 · 연출"

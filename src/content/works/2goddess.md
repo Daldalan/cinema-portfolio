@@ -1,7 +1,7 @@
 ---
 title: "여신전쟁"
 date: "2025-11"
-category: "Movie"
+category: "Cinematic"
 logline: "빛과 어둠의 두 여신이 맞붙는다."
 runtime: "1.31 min"
 role: "각본 · 연출 · 제작"

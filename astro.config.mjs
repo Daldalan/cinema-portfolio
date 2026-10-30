@@ -11,5 +11,9 @@ export default defineConfig({
     '/shorts': '/movies',
     '/shorts/category/[category]': '/movies/category/[category]',
     '/shorts/[slug]': '/movies/[slug]',
+    // 카테고리 이름 변경: Movie → Cinematic
+    '/movies/category/movie': '/movies/category/cinematic',
+    '/shorts/category/movie': '/movies/category/cinematic',
+    '/works/category/movie': '/movies/category/cinematic',
   },
 });

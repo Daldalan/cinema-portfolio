@@ -1,7 +1,7 @@
 import { defineCollection, z } from 'astro:content';
 
 // 작품 카테고리. 순서대로 Works 페이지 탭에 표시됩니다.
-export const CATEGORIES = ['Movie', 'Animation', 'ETC'] as const;
+export const CATEGORIES = ['Cinematic', 'Animation', 'ETC'] as const;
 export type Category = (typeof CATEGORIES)[number];
 
 // 공개일. '2026-05' 또는 '2026-05-10'. 따옴표 없는 2026-05-10(YAML 날짜)도 허용.
@@ -18,7 +18,7 @@ const works = defineCollection({
     title: z.string(),                 // 작품 제목
     // 공개일. '2026-05' 또는 '2026-05-10'. 그리드는 이 값의 최신순으로 자동 정렬.
     date: dateField,
-    category: z.enum(CATEGORIES),      // 'Movie' | 'Animation' | 'ETC'
+    category: z.enum(CATEGORIES),      // 'Cinematic' | 'Animation' | 'ETC'
     logline: z.string().optional(),    // 한 줄 설명 (카드 / 상세 상단)
     runtime: z.string().optional(),    // 예: '8 min'
     role: z.string().optional(),       // 예: 'Director'
